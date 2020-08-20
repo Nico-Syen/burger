@@ -31,7 +31,7 @@ export default {
   methods:{
     sendConnexionForm : function(){
       axios.post('http://localhost:3000/connexion', {
-        id : this.login,
+        name : this.login,
         password  : this.pwd
       })
       .then( response => {
@@ -43,7 +43,7 @@ export default {
     },
     sendRegisterForm : function(){
       axios.post('http://localhost:3000/register', {
-        id : this.login,
+        name : this.login,
         password  : this.pwd
       })
       .then(response => {
