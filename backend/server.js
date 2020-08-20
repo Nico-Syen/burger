@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 const bcrypt = require('bcrypt')
 const cors = require('cors')
-const User = require('./models/Users.js')
+const User = require('./models/User.js')
 const mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost:27017/burger', {useNewUrlParser: true});
 
@@ -20,31 +20,50 @@ app.use(cors())
 app.post('/register', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    const user = new User({
+    const userRegister = new User({
       name: req.body.name,
       password: hashedPassword
     })
-    await user.save()
+    await userRegister.save()
     res.status(201).send("Succes")
   } catch {
     res.status(500).send("Nope!")
   }
 })
 
-app.post('/connexion', async (req, res) => {
-  const user = users.find(user => user.name === req.body.name)
-  if (user == null) {
-    return res.status(400).send('Cannot find user')
+app.post('/connexion', (req, res) => {
+  if (!req.body.name) {
+    return res.status(400).send('Rentrez votre nom')
   }
   try {
-    if(await bcrypt.compare(req.body.password, user.password)) {
-      res.send('Success')
-    } else {
-      res.send('Not Allowed')
-    }
+    User.find({ name: req.body.name}, async (err, user) => {
+      if (err){
+        res.send(err); 
+      }
+      console.log(user)
+     
+      if (!user.length){
+        res.send('nom pas trouvé');
+      } else {
+
+        if(await bcrypt.compare(req.body.password, user[0].password)) {
+          res.send('Success')
+        }
+        else {
+          res.send('Not Allowed')
+        }
+      }
+    
+
+      // res.json(user); 
+  
+  
+  }).limit(1);
+
+    
   } catch {
     res.status(500).send()
   }
 })
 
-app.listen(3000)
+app.listen(3001)
