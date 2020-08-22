@@ -1,4 +1,3 @@
-// import Users from './models/Users.js';
 const express = require('express')
 const app = express()
 const bcrypt = require('bcrypt')
@@ -19,13 +18,23 @@ app.use(cors())
 
 app.post('/register', async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    const userRegister = new User({
-      name: req.body.name,
-      password: hashedPassword
+     User.find({ name: req.body.name}, async (err, user) => {
+      if (err){
+        res.send(err); 
+      }
+      else if (user.length){
+        res.send('Nom déjà utilisé');
+      } else {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        const userRegister = new User({
+          name: req.body.name,
+          password: hashedPassword
+        })
+        await userRegister.save()
+        res.status(201).send("Success")
+      }
     })
-    await userRegister.save()
-    res.status(201).send("Succes")
+
   } catch {
     res.status(500).send("Nope!")
   }

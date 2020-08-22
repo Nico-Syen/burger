@@ -42,16 +42,24 @@ export default {
       })
     },
     sendRegisterForm : function(){
-      axios.post('http://localhost:3001/register', {
-        name : this.login,
-        password  : this.pwd
-      })
-      .then(response => {
-        this.msg = response.data;
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
+      let regexPwd = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+
+      if(this.pwd.match(regexPwd)) {
+
+        axios.post('http://localhost:3001/register', {
+          name : this.login,
+          password  : this.pwd
+        })
+        .then(response => {
+          this.msg = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+      } else {
+        this.msg = '1upper 1chiffre svp';
+      }
+      
     }
   }
 }
