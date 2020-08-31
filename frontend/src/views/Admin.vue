@@ -1,14 +1,15 @@
 <template>
   <div class="admin">
-    <h1>This is an about page</h1>
+    <Crud msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 <script>
-// import ConnexionForm from '../components/ConnexionForm.vue'
+import Crud from '../components/Crud.vue'
 
 export default {
   name: 'Admin',
   components: {
+    Crud
   }
 }
 </script>

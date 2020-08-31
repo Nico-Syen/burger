@@ -3,6 +3,7 @@ const app = express()
 const bcrypt = require('bcrypt')
 const cors = require('cors')
 const User = require('./models/User.js')
+const Product = require('./models/Product.js')
 const mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost:27017/burger', {useNewUrlParser: true});
 
@@ -74,5 +75,20 @@ app.post('/connexion', (req, res) => {
     res.status(500).send()
   }
 })
+
+app.post('/add', async (req, res) => {
+    try {
+    const productRegister = new Product({
+      product: req.body.product,
+      price: req.body.price
+    })
+      await productRegister.save()
+      res.status(201).send("Success")
+  
+}
+  catch {
+    res.status(500).send("Nope!")
+  }})
+
 
 app.listen(3001)
