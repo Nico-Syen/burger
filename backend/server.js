@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const bcrypt = require('bcrypt')
@@ -5,6 +6,8 @@ const cors = require('cors')
 const User = require('./models/User.js')
 const Product = require('./models/Product.js')
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
+const authenticateToken = require('./middleware/authenticateToken.js').authenticateToken
 mongoose.connect('mongodb://localhost:27017/burger', {useNewUrlParser: true});
 
 const db = mongoose.connection; 
@@ -50,13 +53,16 @@ app.post('/connexion', (req, res) => {
       if (err){
         res.send(err); 
       }
-      console.log(user)
      
       if (!user.length){
         res.send('nom pas trouvé');
       } else {
 
         if(await bcrypt.compare(req.body.password, user[0].password)) {
+          const user = { name : user.name , admin : user.admin }
+
+          const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+          res.json({ accessToken : accessToken})
           res.send('Success')
         }
         else {
@@ -76,7 +82,7 @@ app.post('/connexion', (req, res) => {
   }
 })
 
-app.post('/add', async (req, res) => {
+app.post('/addProduct', async (req, res) => {
     try {
     const productRegister = new Product({
       product: req.body.product,
@@ -90,5 +96,19 @@ app.post('/add', async (req, res) => {
     res.status(500).send("Nope!")
   }})
 
+// MIDDLEWARE app.use('/', (req,res,next) =>)
+  
+app.get('/getProduct', async (req, res) => {
+    try {
+      Product.find({}, (err, burgers) => {
+        console.log(burgers)
+        res.send(burgers)
+      })
+  
+    }
+    catch {
+      res.status(500).send("Nope!")
+    }
+  })
 
 app.listen(3001)

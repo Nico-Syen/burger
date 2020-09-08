@@ -1,15 +1,53 @@
 <template>
   <div class="admin">
-    <Crud msg="Welcome to Your Vue.js App"/>
+    <Add
+    @refreshBurgers="refreshBurgers"
+    ></Add>
+    <Burgers
+    :burgers="burgers"
+    ></Burgers>
   </div>
 </template>
 <script>
-import Crud from '../components/Crud.vue'
+import Add from '../components/Admin/Add.vue'
+import Burgers from '../components/Admin/Burgers.vue'
+import axios from "axios"
+
 
 export default {
   name: 'Admin',
+  data: function () {
+    return {
+      burgers: null
+    }
+  },
   components: {
-    Crud
+    Add,
+    Burgers
+  },
+  methods:{
+    refreshBurgers(burger) {
+
+      this.burgers.push(burger)
+      //this.getBurgers()
+    },
+
+    getBurgers : function(){
+      axios.get('http://localhost:3001/getProduct')
+      
+      .then( response => {
+            this.burgers = response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+    },
+     
+
+
+  },
+    mounted() {
+      this.getBurgers()
   }
 }
 </script>

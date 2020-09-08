@@ -19,27 +19,30 @@
 import axios from "axios"
 
 export default {
-  name: 'Crud',
+  name: 'Add',
   props: [],
   data: function () {
     return {
       product: null,
       price: null,
-      msg: null
-    }
-  },
-  methods:{
-    sendAddProductForm : function(){
-      axios.post('http://localhost:3001/add', {
-        product : this.product,
-        price  : this.price
-      })
-      .then( response => {
-        this.msg = response.data;
-      })
-      .catch(function (error) {
+        msg: null
+      }
+    },
+    methods:{
+      sendAddProductForm : function() {
+        let burger = {
+          product : this.product,
+          price  : this.price
+        }
+        axios.post('http://localhost:3001/addProduct', burger )
+        .then( response => {
+          this.msg = response.data;
+          this.$emit('refreshBurgers', burger)
+        })
+        .catch(function (error) {
         console.log(error);
       })
+
     },
     
   }
