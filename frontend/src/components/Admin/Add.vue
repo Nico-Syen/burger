@@ -6,10 +6,30 @@
     <input type="text" v-model="product"><br>
     <label for="lname">Prix</label><br>
     <input type="text" v-model="price">
-    
-                {{msg}}
+      {{msg}}
     </form> 
    <button @click="sendAddProductForm()">Ajouter</button>
+    <h1>
+      EDIT
+    </h1>
+   <form>
+    <label for="fname">Produit</label><br>
+    <input type="text" v-model="product"><br>
+    <label for="lname">Prix</label><br>
+    <input type="text" v-model="price">
+      {{msg}}
+    </form> 
+   <button @click="sendEditProduct()">éditer</button>
+   <h1>
+      EDIT
+    </h1>
+   <form>
+    <label for="fname">Produit</label><br>
+    <input type="text" v-model="product"><br>
+    </form> 
+   <button @click="deleteProduct()">supprimer</button>
+
+
 </div>
 
 
@@ -42,7 +62,34 @@ export default {
         .catch(function (error) {
         console.log(error);
       })
-
+    },
+    sendEditProduct : function() {
+        let burger = {
+          product : this.product,
+          price  : this.price
+        }
+        axios.post('http://localhost:3001/updateProduct', burger )
+        .then( response => {
+          this.msg = response.data;
+          this.$emit('refreshBurgers', burger)
+        })
+        .catch(function (error) {
+        console.log(error);
+      })
+    },
+    deleteProduct : function() {
+        let burger = {
+          product : this.product,
+          price  : this.price
+        }
+        axios.post('http://localhost:3001/deleteProduct', burger )
+        .then( response => {
+          this.msg = response.data;
+          this.$emit('refreshBurgers', burger)
+        })
+        .catch(function (error) {
+        console.log(error);
+      })
     },
     
   }

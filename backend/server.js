@@ -17,9 +17,6 @@ db.once('open', () =>  console.log("Connexion à la base OK"));
 app.use(express.json())
 app.use(cors())
 
-
-
-
 app.post('/register', async (req, res) => {
   try {
      User.find({ name: req.body.name}, async (err, user) => {
@@ -70,18 +67,11 @@ app.post('/connexion', (req, res) => {
         }
       }
     
-
-      // res.json(user); 
-  
-  
   }).limit(1);
-
-    
   } catch {
     res.status(500).send()
   }
 })
-
 app.post('/addProduct', async (req, res) => {
     try {
     const productRegister = new Product({
@@ -92,23 +82,53 @@ app.post('/addProduct', async (req, res) => {
       res.status(201).send("Success")
   
 }
-  catch {
+catch {
     res.status(500).send("Nope!")
-  }})
+}})
 
-// MIDDLEWARE app.use('/', (req,res,next) =>)
-  
 app.get('/getProduct', async (req, res) => {
-    try {
-      Product.find({}, (err, burgers) => {
-        console.log(burgers)
-        res.send(burgers)
-      })
-  
-    }
-    catch {
-      res.status(500).send("Nope!")
-    }
-  })
+	try {
+		Product.find({}, (err, burgers) => {
+		console.log(burgers)
+		res.send(burgers)
+		})
+
+	}
+	catch {
+		res.status(500).send("Nope!")
+	}
+})
+app.post('/updateProduct', async (req, res) => {
+	console.log('edit', req.body)
+	try {
+		const burger = req.body
+		if (burger) {
+			await Product.updateOne(
+				{ product : burger.product}, // Filter
+				{$set: { price: burger.price}} // Update
+			)
+			res.send("Produit édité")
+		}
+		
+	}
+	catch {
+		res.status(500).send("Nope!")
+	}
+})
+app.post('/deleteProduct', async (req, res) => {
+	console.log('delete', req.body)
+	try {
+		const burger = req.body
+		if (burger) {
+			await Product.deleteOne({ product : burger.product})
+			res.send("Produit supprimé")
+		}
+		
+	}
+	catch {
+		res.status(500).send("Nope!")
+	}
+})
+
 
 app.listen(3001)
